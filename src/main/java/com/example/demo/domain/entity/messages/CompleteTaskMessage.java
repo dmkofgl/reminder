@@ -11,8 +11,8 @@ public class CompleteTaskMessage extends TaskMessage {
 
     public CompleteTaskMessage(String message) {
         String[] commands = message.split(" ");
-        String databaseId = message.split(" ")[1];
         try {
+            String databaseId = commands[1];
             this.databaseId = Long.valueOf(databaseId);
         } catch (Exception e) {
 
