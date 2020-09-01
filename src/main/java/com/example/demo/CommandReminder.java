@@ -5,6 +5,7 @@ import com.example.demo.domain.repository.TaskRepository;
 import com.example.demo.domain.telegramm.PollingBot;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -33,9 +34,10 @@ public class CommandReminder {
                 Task t = tasks.get(i);
                 boolean isSent = false;
                 if (isRemindDatetime(t)) {
-                    Date now = new Date();
+                    ZoneId minskZone = ZoneId.of("Europe/Minsk");
+                    Instant now = LocalDateTime.now().atZone(minskZone).toInstant();
                     Duration period = Duration.parse(t.getRemindPeriod());
-                    t.setNextRemindDate(Date.from(now.toInstant().plus(period)));
+                    t.setNextRemindDate(Date.from(now.plus(period)));
                     taskRepository.save(t);
                     bot.sendTask(t);
                     isSent = true;
@@ -61,8 +63,9 @@ public class CommandReminder {
     }
 
     private Long getDifferenceMinutes(Date date) {
-        LocalDateTime now = LocalDateTime.now();
-        Temporal temporal = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        ZoneId minskZone = ZoneId.of("Europe/Minsk");
+        Instant now = LocalDateTime.now().atZone(minskZone).toInstant();
+        Temporal temporal = date.toInstant().atZone(minskZone).toLocalDateTime();
         Long diff = ChronoUnit.MINUTES.between(temporal, now);
 
         return diff;
