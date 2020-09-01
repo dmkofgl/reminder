@@ -33,8 +33,9 @@ public class CommandReminder {
                 Task t = tasks.get(i);
                 boolean isSent = false;
                 if (isRemindDatetime(t)) {
+                    Date now = new Date();
                     Duration period = Duration.parse(t.getRemindPeriod());
-                    t.setNextRemindDate(Date.from(t.getNextRemindDate().toInstant().plus(period)));
+                    t.setNextRemindDate(Date.from(now.toInstant().plus(period)));
                     taskRepository.save(t);
                     bot.sendTask(t);
                     isSent = true;
